@@ -2,6 +2,7 @@ package org.example.treeview.model;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
+import org.example.treeview.model.data.Person;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -95,6 +96,36 @@ public class TestOrganisationModel {
         model.selectPerson("Barry White");
 
         Assert.assertNull(selectedPerson.get());
+    }
+
+    @Test
+    public void testSetRootPerson(){
+        OrganisationModel model = new OrganisationModel();
+
+        Person person = new Person();
+        person.setName("test");
+
+        model.setRootPerson(person);
+        ObservablePerson root = model.getOrganisationRoot();
+        Assert.assertEquals(root.getName().getValue(), person.getName());
+    }
+
+    @Test
+    public void testSetRootPersonRaisesEvent() {
+        OrganisationModel model = new OrganisationModel();
+
+        AtomicBoolean eventFired = new AtomicBoolean(false);
+        model.onModelChanged((Void) -> {
+            eventFired.set(true);
+            return null;
+        });
+
+
+        Person person = new Person();
+        person.setName("test");
+
+        model.setRootPerson(person);
+        Assert.assertTrue(eventFired.get());
     }
 
 
